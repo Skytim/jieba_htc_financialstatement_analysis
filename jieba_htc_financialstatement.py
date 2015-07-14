@@ -3,6 +3,7 @@ import jieba
 import pickle
 import numpy as np
 import os
+import csv
 jieba.set_dictionary('dict.txt.big')
 negative=[]
 for i in open('ntusd-negative.txt'):
@@ -10,11 +11,13 @@ for i in open('ntusd-negative.txt'):
 positive=[]
 for i in open('ntusd-positive.txt'):
     positive.append(str(i))
-
-
+f = open("result.csv","w")
+w = csv.writer(f)
+w.writerow( ('index', 'value') )
 for root, dirs, files in os.walk("htc_data"):
     for f in files:
         if (f!=".DS_Store"):
+
            content = open('htc_data/'+f, 'rb').read()
            words = jieba.cut(content, cut_all=False)
            score=[]
@@ -30,6 +33,9 @@ for root, dirs, files in os.walk("htc_data"):
                     break
            print f         
            print np.sum(score)
+           w.writerows([f,str(np.sum(score))])
+f.close()
+
 
 
 
